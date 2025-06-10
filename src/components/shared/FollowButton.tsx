@@ -14,6 +14,7 @@ type CreatorProps = {
 
 const FollowButton = ({ creator }: CreatorProps) => {
   const { data: currentUser } = useGetCurrentUser();
+  if (!currentUser) return null;
   const [isFollowing, setIsFollowing] = useState<boolean>(
     creator.followers.includes(currentUser?.$id)
   );
@@ -28,10 +29,10 @@ const FollowButton = ({ creator }: CreatorProps) => {
   const followCreatorHandler = async (e: React.MouseEvent) => {
     e.preventDefault();
     const updatedFollowers = isFollowing
-      ? creator.followers.filter((id) => id !== currentUser.$id)
+      ? creator.followers.filter((id:any) => id !== currentUser.$id)
       : [...creator.followers, currentUser.$id];
     const updatedFollowings = isFollowing
-      ? currentUser.following.filter((id) => id !== creator.$id)
+      ? currentUser.following.filter((id:any) => id !== creator.$id)
       : [...currentUser.following, creator.$id];
     const success = await followCreator({
       userID: currentUser.$id,

@@ -12,13 +12,12 @@ import { signupValidation } from "@/lib/validation"
 import Loader from "@/components/shared/Loader"
 import { toast } from "sonner"
 import { useCreateUserAccount, useGetCurrentUser, useSignInAccount } from "@/lib/react-query/queriesAndMutations"
-import { useUserContext } from "@/context/AuthContext"
 
 
 const SignupForm = () => {
-  const { refetch: getCurrentUser, isLoading: isUserLoading } = useGetCurrentUser();
+  const { refetch: getCurrentUser} = useGetCurrentUser();
   const { mutateAsync: createUserAccount, isPending: isCreatingsUser } = useCreateUserAccount();
-  const { mutateAsync: signInAccount, isPending: isSigningIn } = useSignInAccount();
+  const { mutateAsync: signInAccount} = useSignInAccount();
   const navigate = useNavigate();
 
   // 1. Define your form.

@@ -12,13 +12,11 @@ import { signinValidation} from "@/lib/validation"
 import Loader from "@/components/shared/Loader"
 import { toast } from "sonner"
 import { useGetCurrentUser, useSignInAccount } from "@/lib/react-query/queriesAndMutations"
-import { useUserContext } from "@/context/AuthContext"
-import { getCurrentUser } from "@/lib/appwrite/api"
 
 
 const SigninForm = () => {
-  const {isLoading:isGettingCurrentUser, checkAuthUser, isLoading: isUserLoading} = useUserContext();
-  const { mutateAsync: signInAccount} = useSignInAccount();
+  const { mutateAsync: signInAccount, isPending: isSigningIn } = useSignInAccount();
+  const { refetch: getCurrentUser} = useGetCurrentUser();
   const navigate = useNavigate();
 
   // 1. Define your form.
@@ -94,7 +92,7 @@ const SigninForm = () => {
             )}
           />
           <Button type="submit" className="shad-button_primary">
-            {isUserLoading ? (
+            {isSigningIn ? (
               <div className="flex-center gap-2">
                 <Loader /> Loading...
               </div>

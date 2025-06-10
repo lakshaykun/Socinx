@@ -11,7 +11,7 @@ import {
 } from "react-router-dom";
 import LikedPosts from "./LikedPosts";
 import { useGetUserByID } from "@/lib/react-query/queriesAndMutations";
-import FollowButton from "@/components/shared/followButton";
+import FollowButton from "@/components/shared/FollowButton";
 
 interface StabBlockProps {
   value: string | number;

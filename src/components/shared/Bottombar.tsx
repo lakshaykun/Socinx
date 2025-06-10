@@ -1,20 +1,8 @@
-import { Link, useLocation, useNavigate } from "react-router-dom"
-import { Button } from "../ui/button"
-import { useSignOutAccount } from "@/lib/react-query/queriesAndMutations";
-import { useEffect } from "react";
-import { useUserContext } from "@/context/AuthContext";
+import { Link, useLocation } from "react-router-dom"
 import { bottombarLinks } from "@/constants";
-import type { INavLink } from "@/Types";
 
 const Bottombar = () => {
   const { pathname } = useLocation();
-  const { mutate: signOut, isSuccess} = useSignOutAccount();
-  const navigate = useNavigate();
-  const { user } = useUserContext();
-
-  useEffect(() => {
-    if (isSuccess) navigate(0);
-  }, [isSuccess]);
 
   return (
     <section className='bottom-bar'>

@@ -13,7 +13,7 @@ const LeftSidebar = () => {
   const { user } = useUserContext();
 
   useEffect(() => {
-    if (isSuccess) navigate(0);
+    if (isSuccess) navigate("/sign-in");
   }, [isSuccess]);
 
   return (

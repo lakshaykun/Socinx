@@ -6,9 +6,9 @@ import { toast } from "sonner";
 
 export default function CommentsSection({ post }: any) {
   const { user } = useUserContext();
-  const { mutateAsync: addComment, isPending: isAddingComment } = useAddComment(post.$id);
+  const { mutateAsync: addComment} = useAddComment(post.$id);
   const { mutateAsync: editComment, isPending: isEditingComment } = useEditComment(post.$id);
-  const { mutateAsync: deleteComment, isPending: isDeletingComment } = useDeleteComment(post.$id);
+  const { mutateAsync: deleteComment} = useDeleteComment(post.$id);
 
   // Initial comments from the post
   const [comments, setComments] = useState(post.comments);
@@ -114,7 +114,7 @@ export default function CommentsSection({ post }: any) {
 
       {/* Comments list */}
       <div className="post_details-comments_list">
-        {comments.map((comment, index) => (
+        {comments.map((comment:any , index:any) => (
           <div key={index} className="flex items-start gap-3">
             <img
               className="w-10 h-10 rounded-full object-cover"

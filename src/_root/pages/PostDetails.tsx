@@ -22,21 +22,6 @@ const PostDetails = () => {
   const { data: post, isPending } = useGetPostByID(id as string);
   const { user } = useUserContext();
   const { mutate: deletePost } = useDeletePost();
-  
-  
-  const handleDeletePost = () => {
-    deletePost({ postID: id, imageID: post.imageID });
-    navigate(-1);
-  };
-  
-  if (!isPending && !post) {
-    return (
-      <div className="flex-center flex-1">
-        <h2 className="h3-bold md:h2-bold text-light-1">Post not found</h2>
-      </div>
-    );
-  }
-  
   const { data: userPosts, isLoading: isUserPostLoading } = useGetUserPosts(
     post?.creator.$id
   );
@@ -44,6 +29,19 @@ const PostDetails = () => {
   const relatedPosts = userPosts?.documents.filter(
     (userPost) => userPost.$id !== id
   );
+  const handleDeletePost = () => {
+    deletePost({ postID: id, imageID: post?.imageID });
+    navigate(-1);
+  };
+  
+  if (isPending) return <Loader />;
+  if (!post) {
+    return (
+      <div className="flex-center flex-1">
+        <h2 className="h3-bold md:h2-bold text-light-1">Post not found</h2>
+      </div>
+    );
+  }
   
   return (
     <div className="post_details-container">
@@ -53,7 +51,7 @@ const PostDetails = () => {
         <>
         <div className="post_details-card">
           <img
-            src={post.imageURL}
+            src={post?.imageURL || null}
             alt="Post Image"
             className="post_details-img"
           />
