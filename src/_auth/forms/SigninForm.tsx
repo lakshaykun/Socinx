@@ -11,7 +11,8 @@ import type z from "zod"
 import { signinValidation} from "@/lib/validation"
 import Loader from "@/components/shared/Loader"
 import { toast } from "sonner"
-import { useGetCurrentUser, useSignInAccount } from "@/lib/react-query/queriesAndMutations"
+import { useGetCurrentUser, useSignInAccount} from "@/lib/react-query/queriesAndMutations"
+import { signOutAccount } from "@/lib/appwrite/api"
 
 
 const SigninForm = () => {
@@ -30,6 +31,7 @@ const SigninForm = () => {
  
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof signinValidation>) {
+    await signOutAccount();
     // Automatically sign in the user after account creation
     const session = await signInAccount({
       email: values.email,
