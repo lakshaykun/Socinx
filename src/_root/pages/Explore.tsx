@@ -28,8 +28,6 @@ const Explore = () => {
     )
   }
 
-  console.log("Posts: ", posts);
-
   const shouldShowSearchResults = searchValue.length > 0;
   const shouldShowPosts = !shouldShowSearchResults && posts.pages.every((item:any) => item.documents.length === 0);
 
