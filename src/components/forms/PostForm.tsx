@@ -58,11 +58,9 @@ const PostForm = ({ post, action }: PostFormProps) => {
         imageUrl: post?.imageURL,
       });
 
-      console.log("Updated Post:", updatedPost);
-
       if (updatedPost) {
         toast.success("Post updated successfully!");
-        return navigate(`/post/${post.$id}`);
+        return navigate(`/`);
       }
 
       toast.error("Failed to update post, Please try again.");
@@ -71,8 +69,6 @@ const PostForm = ({ post, action }: PostFormProps) => {
         ...values,
         userId: user.id,
       });
-
-      console.log("New Post:", newPost);
 
       if (!newPost) {
         toast.error("Failed to create post, Please try again.");

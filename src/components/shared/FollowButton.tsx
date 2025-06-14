@@ -14,7 +14,6 @@ type CreatorProps = {
 
 const FollowButton = ({ creator }: CreatorProps) => {
   const { data: currentUser } = useGetCurrentUser();
-  if (!currentUser) return null;
   const [isFollowing, setIsFollowing] = useState<boolean>(
     creator.followers.includes(currentUser?.$id)
   );
@@ -27,6 +26,10 @@ const FollowButton = ({ creator }: CreatorProps) => {
     [currentUser];
 
   const followCreatorHandler = async (e: React.MouseEvent) => {
+    if (!currentUser) {
+      toast.error("You need to be logged in to follow a creator.");
+      return;
+    }
     e.preventDefault();
     const updatedFollowers = isFollowing
       ? creator.followers.filter((id:any) => id !== currentUser.$id)

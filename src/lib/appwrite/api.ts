@@ -1,6 +1,7 @@
 import type { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/Types";
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
-import { ID, Query } from "appwrite";
+import { ID, Query, type Models } from "appwrite";
+import { upsertUser } from "../recommender/api";
 
 export async function createUserAccount(user: INewUser) {
   try {
@@ -85,7 +86,7 @@ export async function getCurrentUser() {
       console.log("User not found in database");
       return null;
     }
-
+    upsertUser(currentUser.documents[0]);
     return currentUser.documents[0];
   } catch (error) {
     console.log("Error getting current user:", error);
@@ -201,6 +202,43 @@ export async function getRecentPosts() {
   }
 }
 
+export async function updateTrendCount(postID: string, post?: Models.Document) {
+  // Update the trend count of a post based on the operation performed
+  try {
+    if (!post) {
+      post = await databases.getDocument(
+        appwriteConfig.databaseID,
+        appwriteConfig.postsCollectionID,
+        postID
+      );
+    }
+
+    if (!post) {
+      console.log("Post not found");
+      return null;
+    }
+
+    const updatedPost = await databases.updateDocument(
+      appwriteConfig.databaseID,
+      appwriteConfig.postsCollectionID,
+      post.$id,
+      {
+        trendCount: 1.25 * post.likes.length + 1 * post.save.length + 0.75 * post.comments.length,
+      }
+    );
+
+    if (!updatedPost) {
+      console.log("Failed to update trend count");
+      return null;
+    }
+
+    return updatedPost;
+  } catch (error) {
+    console.log("Error updating trend count:", error);
+    return null;
+  }
+}
+
 export async function likePost(postID: string, likesArray: string[]) {
   try {
     const updatedPost = await databases.updateDocument(
@@ -208,7 +246,7 @@ export async function likePost(postID: string, likesArray: string[]) {
       appwriteConfig.postsCollectionID,
       postID,
       {
-        likes: likesArray,
+        likes: likesArray
       }
     );
 
@@ -217,7 +255,10 @@ export async function likePost(postID: string, likesArray: string[]) {
       return null;
     }
 
-    return updatedPost;
+    // Update the trend count after liking/disliking the post
+    const trendUpdatedPost = await updateTrendCount(postID, updatedPost);
+
+    return trendUpdatedPost;
   } catch (error) {
     console.log("Error liking post:", error);
     return null;
@@ -241,14 +282,17 @@ export async function savePost(postID: string, userID: string) {
       return null;
     }
 
-    return updatedPost;
+    // Update the trend count after saving the post
+    const trendUpdatedPost = await updateTrendCount(postID, updatedPost);
+
+    return trendUpdatedPost;
   } catch (error) {
     console.log("Error saving post:", error);
     return null;
   }
 }
 
-export async function deleteSavedPost(savedRecordID: string) {
+export async function deleteSavedPost(savedRecordID: string, postID: string) {
   try {
     const status = await databases.deleteDocument(
       appwriteConfig.databaseID,
@@ -261,6 +305,8 @@ export async function deleteSavedPost(savedRecordID: string) {
       return null;
     }
 
+    // Update the trend count after deleting the saved post
+    await updateTrendCount(postID);
     return status;
   } catch (error) {
     console.log("Error deleting saved post:", error);
@@ -411,21 +457,27 @@ export async function getInfinitePosts({ pageParam }: { pageParam?: string }) {
   }
 }
 
-export async function searchPosts(searchParam: string) {
+export async function getInfiniteTrendingPosts({ pageParam }: { pageParam?: string }) {
+  const queries: any[] = [Query.orderDesc("trendCount"), Query.limit(6)];
+  if (pageParam) {
+    queries.push(Query.cursorAfter(pageParam));
+  }
+
   try {
     const posts = await databases.listDocuments(
       appwriteConfig.databaseID,
       appwriteConfig.postsCollectionID,
-      [Query.search("caption", searchParam)]
+      queries
     );
 
-    if (!posts || posts.documents.length === 0) {
-      console.log("No posts found for the search term");
+    if (!posts) {
+      console.log("No posts found");
       return null;
     }
+
     return posts;
   } catch (error) {
-    console.log("Error searching posts:", error);
+    console.log("Error getting infinite posts:", error);
     return null;
   }
 }
@@ -616,7 +668,10 @@ export async function addComment(
       return null;
     }
 
-    return response;
+    // Update the trend count after saving the post
+    const updatedPost = await updateTrendCount(postID);
+
+    return updatedPost;
   } catch (error) {
     console.log("Error posting comment:", error);
     return null;
@@ -649,7 +704,7 @@ export async function editComment(
   }
 }
 
-export async function deleteComment(commentId: string) {
+export async function deleteComment(commentId: string, postID: string) {
   try {
     const deletedComment = await databases.deleteDocument(
       appwriteConfig.databaseID,
@@ -662,6 +717,8 @@ export async function deleteComment(commentId: string) {
       return null;
     }
 
+    // Update the trend count after deleting the comment
+    await updateTrendCount(postID);
     return deletedComment;
   } catch (error) {
     console.log("Error deleting comment:", error);

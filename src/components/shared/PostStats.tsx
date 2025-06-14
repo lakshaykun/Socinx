@@ -11,8 +11,8 @@ type PostStatsProps = {
 
 const PostStats = ({ post, userID }: PostStatsProps) => {
     const likesArray = post.likes.map((user: Models.Document) => user.$id);
-    const { mutate: likePost, isPending: isLikingPost } = useLikePost();
-    const { mutate: savePost, isPending: isSavingPost } = useSavePost();
+    const { mutateAsync: likePost, isPending: isLikingPost } = useLikePost();
+    const { mutateAsync: savePost, isPending: isSavingPost } = useSavePost();
     const { mutate: deleteSavedPost, isPending: isDeletingSaved } = useDeleteSavedPost();
     const { data: currentUser } = useGetCurrentUser();
     const [ likes, setLikes ] = useState<string[]>(likesArray);
@@ -27,7 +27,7 @@ const PostStats = ({ post, userID }: PostStatsProps) => {
         setLikes(post.likes.map((user: Models.Document) => user.$id));
     }, [post.likes]);
 
-    const handleLikePost = (e: React.MouseEvent) => {
+    const handleLikePost = async (e: React.MouseEvent) => {
         e.stopPropagation();
         let updatedLikes = [...likes];
         if (checkIsLiked(likes, userID)) {
@@ -36,19 +36,19 @@ const PostStats = ({ post, userID }: PostStatsProps) => {
             updatedLikes.push(userID);
         }
         setLikes(updatedLikes);
-        likePost({ postID: post.$id, likesArray: updatedLikes });
-    }
+        await likePost({ postID: post.$id, likesArray: updatedLikes });
+    };
 
     const handleSavePost = (e: React.MouseEvent) => {
         e.stopPropagation();
         if (savedPostRecord) {
-            deleteSavedPost(savedPostRecord.$id);
+            deleteSavedPost({savedRecordID: savedPostRecord.$id, postID: post.$id});
             setIsSaved(false);
         } else {
             savePost({ postID: post.$id, userID: userID });
             setIsSaved(true);
         }
-    }
+    };
 
     return (
         <div className="flex justify-between items-center z-20">

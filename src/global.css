@@ -179,7 +179,7 @@
 
 /* Home (converted from @layer utilities) */
 @utility home-container {
-  @apply flex flex-col flex-1 items-center gap-10 overflow-scroll py-10 px-5 md:px-8 lg:p-14 custom-scrollbar;
+  @apply flex flex-col flex-1 items-center gap-10 xl:overflow-scroll py-10 px-5 md:px-8 lg:p-14 xl:custom-scrollbar;
 }
 
 @utility home-posts {
@@ -187,7 +187,7 @@
 }
 
 @utility home-creators {
-  @apply hidden xl:flex flex-col w-72 2xl:w-465 px-6 py-10 gap-10 overflow-scroll custom-scrollbar;
+  @apply flex flex-col px-6 py-8 xl:w-72 2xl:w-465 xl:px-6 xl:py-10 xl:gap-10 xl:overflow-scroll xl:custom-scrollbar;
 }
 
 /* Post Details (converted from @layer utilities) */

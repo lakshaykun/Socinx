@@ -17,4 +17,8 @@ export const QUERY_KEYS = {
 
   //  SEARCH KEYS
   SEARCH_POSTS: "getSearchPosts",
+  GET_RELATED_POSTS: "getRelatedPosts",
+  GET_RECOMMENDED_POSTS: "getRecommendedPosts",
+  GET_RECOMMENDED_USERS: "getRecommendedUsers",
+  GET_INFINITE_TRENDING_POSTS: "getInfiniteTrendingPosts",
 } as const;
