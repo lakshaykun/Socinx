@@ -17,8 +17,8 @@ import { upsertPost, getRelatedPosts, getRecommendedPosts, upsertUser, getRecomm
 export const useCreateUserAccount = () => {
   return useMutation({
     mutationFn: (user: INewUser) => createUserAccount(user),
-    onSuccess: (data) => {
-      upsertUser(data);
+    onSuccess: async (data) => {
+      await upsertUser(data);
     }
   });
 };
@@ -235,8 +235,8 @@ export const useUpdateUser = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (user: IUpdateUser) => updateUser(user),
-    onSuccess: async (data) => {
-      await upsertUser(data);
+    onSuccess: (data) => {
+      upsertUser(data);
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_CURRENT_USER],
       });
