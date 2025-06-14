@@ -76,6 +76,7 @@ export const useLikePost = () => {
       likesArray: string[];
     }) => likePost(postID, likesArray),
     onSuccess: (data) => {
+      upsertPost(data);
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_POST_BY_ID, data?.$id],
       });

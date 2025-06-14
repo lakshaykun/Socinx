@@ -256,9 +256,9 @@ export async function likePost(postID: string, likesArray: string[]) {
     }
 
     // Update the trend count after liking/disliking the post
-    const trendUpdatedPost = await updateTrendCount(postID, updatedPost);
+    updateTrendCount(postID, updatedPost);
 
-    return trendUpdatedPost;
+    return updatedPost;
   } catch (error) {
     console.log("Error liking post:", error);
     return null;
@@ -283,9 +283,9 @@ export async function savePost(postID: string, userID: string) {
     }
 
     // Update the trend count after saving the post
-    const trendUpdatedPost = await updateTrendCount(postID, updatedPost);
+    updateTrendCount(postID);
 
-    return trendUpdatedPost;
+    return updatedPost;
   } catch (error) {
     console.log("Error saving post:", error);
     return null;
@@ -306,7 +306,7 @@ export async function deleteSavedPost(savedRecordID: string, postID: string) {
     }
 
     // Update the trend count after deleting the saved post
-    await updateTrendCount(postID);
+    updateTrendCount(postID);
     return status;
   } catch (error) {
     console.log("Error deleting saved post:", error);
@@ -667,11 +667,10 @@ export async function addComment(
       console.log("Failed to post comment");
       return null;
     }
-
     // Update the trend count after saving the post
-    const updatedPost = await updateTrendCount(postID);
+    updateTrendCount(postID);
 
-    return updatedPost;
+    return response;
   } catch (error) {
     console.log("Error posting comment:", error);
     return null;
@@ -718,7 +717,7 @@ export async function deleteComment(commentId: string, postID: string) {
     }
 
     // Update the trend count after deleting the comment
-    await updateTrendCount(postID);
+    updateTrendCount(postID);
     return deletedComment;
   } catch (error) {
     console.log("Error deleting comment:", error);

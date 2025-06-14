@@ -34,6 +34,7 @@ export const upsertPost = async (post: any) => {
         "save": post.save || [],
         "trendCount": post.trendCount || 0,
         "imageURL": post.imageURL || '',
+        "creatorFollowersCount": post.creator['followersCount'] || 0,
     }, {
         headers: {
             'Content-Type': 'application/json',
@@ -49,7 +50,6 @@ export const upsertPost = async (post: any) => {
 
 export const upsertUser = async (user: any) => {
     if (!user) return null;
-    console.log(`${recommenderConfig.apiUrl}/related-posts`);
     const response = await axios.post(`${recommenderConfig.apiUrl}/upsert-user`, {
         "id": user.$id,
         "name": user.name,
