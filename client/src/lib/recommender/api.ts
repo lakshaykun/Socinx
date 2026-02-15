@@ -2,10 +2,11 @@ import { getPostByID, getUserByID } from "../appwrite/api";
 import axios from "axios";
 import { recommenderConfig } from "./config";
 
-export const getRelatedPosts = async (postID: string, limit?: number) => {
+export const getRelatedPosts = async (postID: string, userID: string, limit?: number) => {
   const response = await axios.get(`${recommenderConfig.apiUrl}/related-posts`, {
     params: {
       post_id: postID,
+      user_id: userID,
       limit: limit || 6
     }
   });
