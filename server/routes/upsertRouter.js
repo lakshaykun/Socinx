@@ -1,4 +1,5 @@
 import Router from 'express';
+import { appwriteAuth } from '../middlewares/appwriteAuth.js';
 import upsertPostController from '../controllers/upsertPostController.js';
 import upsertUserController from '../controllers/upsertUserController.js';
 const upsertRouter = Router();

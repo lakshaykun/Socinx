@@ -1,8 +1,9 @@
 import Router from 'express';
-import { appwriteAuth } from '../middlewares/appwriteAuth'
-import { getUserEmbedding, getPostsPinecone } from '../config/pineconeConfig';
-import { getEmbedding } from '../config/aiServiceConfig';
-import { getPostAppwrite } from '../config/appwriteConfig'
+import { appwriteAuth } from '../middlewares/appwriteAuth.js';
+import { getUserEmbedding, getPostsPinecone } from '../config/pineconeConfig.js';
+import { getEmbedding } from '../config/aiServiceConfig.js';
+import { getPostAppwrite } from '../config/appwriteConfig.js';
+import { config } from '../config/config.js';
 import cosineSimilarity from 'cosine-similarity';
 
 const searchRouter = Router();
@@ -37,7 +38,7 @@ export default searchRouter;
 const searchPosts = async (query, userEmbedding) => {
     try {
         const queryEmbedding = await getEmbedding(query);
-        const results = await getPostsPinecone(vector=queryEmbedding, includeMetadata=false);
+        const results = await getPostsPinecone(queryEmbedding, {}, config.top_k, false, true);
         // re-rank the posts
         for (let post of results) {
             post.post = await getPostAppwrite(post.id);

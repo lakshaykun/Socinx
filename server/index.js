@@ -1,5 +1,5 @@
 import express from 'express';
-import config from './config/config.js';
+import { config } from './config/config.js';
 import upsertRouter from './routes/upsertRouter.js';
 import recommendationsRouter from './routes/recommendationsRouter.js';
 import searchRouter from './routes/searchRouter.js';

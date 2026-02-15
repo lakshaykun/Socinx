@@ -1,5 +1,5 @@
 import { upsertPostEmbedding } from '../config/pineconeConfig.js';
-import { updatePost } from '../config/appwriteConfig.js';
+import { updatePostAppwrite } from '../config/appwriteConfig.js';
 import { getImageCaption, getEmbedding } from '../config/aiServiceConfig.js';
 
 const buildEmbeddingText = (caption, imageCaption, tags) => {
@@ -36,7 +36,7 @@ export default async (req, res) => {
             throw new Error('Failed to upsert embedding to Pinecone');
         }
         // update the status and image caption into Appwrite
-        const appwriteResponse = await updatePost(docID, {
+        const appwriteResponse = await updatePostAppwrite(docID, {
             status: true,
             imageCaption: imageCaption,
         });

@@ -1,6 +1,7 @@
-import { upsertUserEmbedding } from '../config/pineconeConfig.js';
+import { upsertUserEmbedding, getPostsIndex, getUsersIndex } from '../config/pineconeConfig.js';
 import { getUserAppwrite } from '../config/appwriteConfig.js';
 import { getEmbedding } from '../config/aiServiceConfig.js';
+import { config } from '../config/config.js';
 
 const upsertUserConfig = {
     fetchRecentPostsLimit: 5, // Number of recent posts to consider for embedding
@@ -62,7 +63,7 @@ function averageEmbeddings(embeddings) {
     return avg.map(value => value / embeddings.length);
 }
 
-export const fetchRecentPosts = async (posts) => {
+export const fetchRecentPosts = async (posts, postsIndex) => {
     if (!posts || posts.length === 0) return null;
 
     // Sort by recency
@@ -72,7 +73,7 @@ export const fetchRecentPosts = async (posts) => {
 
     const ids = postsSorted.map(post => post.$id);
 
-    const response = await postIndex.fetch(ids);
+    const response = await postsIndex.fetch(ids);
     const vectors = response.vectors || {};
 
     const embeddings = ids
@@ -82,7 +83,7 @@ export const fetchRecentPosts = async (posts) => {
     return averageEmbeddings(embeddings);
 };
 
-export const fetchLikedPosts = async (posts) => {
+export const fetchLikedPosts = async (posts, postsIndex) => {
     if (!posts || posts.length === 0) return null;
 
     // Sort by recency
@@ -92,7 +93,7 @@ export const fetchLikedPosts = async (posts) => {
 
     const ids = postsSorted.map(post => post.$id);
 
-    const response = await postIndex.fetch(ids);
+    const response = await postsIndex.fetch(ids);
     const vectors = response.vectors || {};
 
     const embeddings = ids
@@ -102,7 +103,7 @@ export const fetchLikedPosts = async (posts) => {
     return averageEmbeddings(embeddings);
 };
 
-export const fetchSavePosts = async (saves) => {
+export const fetchSavePosts = async (saves, postsIndex) => {
     if (!saves || saves.length === 0) return null;
 
     const savesSorted = [...saves]
@@ -111,7 +112,7 @@ export const fetchSavePosts = async (saves) => {
 
     const ids = savesSorted.map(save => save.post);
 
-    const response = await postIndex.fetch(ids);
+    const response = await postsIndex.fetch(ids);
     const vectors = response.vectors || {};
 
     const embeddings = ids
@@ -121,10 +122,10 @@ export const fetchSavePosts = async (saves) => {
     return averageEmbeddings(embeddings);
 };
 
-export const fetchFollowingEmbedding = async (followings) => {
+export const fetchFollowingEmbedding = async (followings, usersIndex) => {
     if (!followings || followings.length === 0) return null;
 
-    const response = await userIndex.fetch(followings);
+    const response = await usersIndex.fetch(followings);
     const vectors = response.vectors || {};
 
     const embeddings = followings
@@ -152,12 +153,16 @@ export default async (req, res) => {
         // Get embedding vector from AI service
         const embeddingVector = await getEmbedding(embeddingText);
 
+        // Get pinecone indexes
+        const postsIndex = getPostsIndex();
+        const usersIndex = getUsersIndex();
+
         // get other embeddings in parallel
         const [recentPostsEmbedding, savedPostsEmbedding, likedPostsEmbedding, followingEmbedding] = await Promise.all([
-            fetchRecentPosts(user.posts || []),
-            fetchSavePosts(user.save || []),
-            fetchLikedPosts(user.liked || []),
-            fetchFollowingEmbedding(user.following || [])
+            fetchRecentPosts(user.posts || [], postsIndex),
+            fetchSavePosts(user.save || [], postsIndex),
+            fetchLikedPosts(user.liked || [], postsIndex),
+            fetchFollowingEmbedding(user.following || [], usersIndex)
         ]);
 
         // Combine all embeddings (including user embedding) into one vector (simple average)

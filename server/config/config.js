@@ -1,4 +1,4 @@
-require('dotenv').config();
+import 'dotenv/config';
 
 export const config = {
     PINECONE_API_KEY: process.env.PINECONE_API_KEY || '',

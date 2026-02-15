@@ -1,5 +1,5 @@
 import { Client, Account } from "node-appwrite";
-import { config } from '../config/config';
+import { config } from '../config/config.js';
 
 export const appwriteAuth = async (req, res, next) => {
   try {

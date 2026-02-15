@@ -6,6 +6,10 @@ const pc = new Pinecone({
 });
 
 const postsIndex = pc.index("posts");
+const usersIndex = pc.index("users");
+
+export const getPostsIndex = () => postsIndex;
+export const getUsersIndex = () => usersIndex;
 
 export const upsertPostEmbedding = async (docID, embedding, tags = []) => {
   try {
@@ -89,5 +93,3 @@ export const getPostsPinecone = async (vector, filter={}, k=config.top_k, includ
     throw new Error("Failed to fetch posts");
   }
 };
-
-const usersIndex = pc.index("users");
