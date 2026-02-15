@@ -1,0 +1,118 @@
+# -----------------------------
+# General
+# -----------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Node modules and logs
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Vite / frontend build
+dist/
+build/
+.vite/
+.cache/
+
+# TypeScript
+*.tsbuildinfo
+
+# Environment files
+.env
+.env.*
+.env.local
+
+# Logs and runtime files
+*.log
+logs/
+*.pid
+*.seed
+
+# -----------------------------
+# Python (ai_service)
+# -----------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.pyc
+
+# Virtual environments
+venv/
+env/
+.venv/
+venv*/
+ai_service/.venv/
+
+# Packaging and caches
+pip-wheel-metadata/
+*.egg-info/
+build/
+dist/
+eggs/
+parts/
+sdist/
+var/
+*.egg
+.pytest_cache/
+.mypy_cache/
+__pypackages__/
+
+# Coverage
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Database files
+*.sqlite3
+*.db
+
+# -----------------------------
+# Docker
+# -----------------------------
+# Ignore compose override and local builds
+docker-compose.override.yml
+Dockerfile.*.local
+
+# -----------------------------
+# IDEs / editors
+# -----------------------------
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.project
+.classpath
+.settings/
+
+# -----------------------------
+# OS / misc
+# -----------------------------
+*.swp
+*.swo
+*~
+*.bak
+*.tmp
+
+# Secrets / keys
+*.pem
+*.key
+*.crt
+*.pfx
+
+# Ignore build outputs from client and server
+/client/dist/
+/client/build/
+/server/dist/
+
+# Optional: ignore lock files if you don't want them tracked
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
